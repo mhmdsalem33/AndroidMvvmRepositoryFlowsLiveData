@@ -17,7 +17,7 @@ object NetworkModule {
     @Singleton
     fun provideApi() : ApiServices =
         Retrofit.Builder()
-            .baseUrl("https://www.themealdb.com/")
+            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiServices::class.java)

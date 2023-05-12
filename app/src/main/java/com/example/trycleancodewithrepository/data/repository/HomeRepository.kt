@@ -14,26 +14,29 @@ import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val apiServices: ApiServices) {
 
-    
     suspend fun getMeals(): Flow<ResponseState<MealResponse>> {
         return flow {
-            emit(ResponseState.Loading())
+                        emit(ResponseState.Loading())
             try {
                 val response = apiServices.getMealApi()
                 if (response.isSuccessful) {
                     Log.d("testApp", "success to call api")
                     response.body()?.let {
-                        emit(ResponseState.Success(it))
+                         emit(ResponseState.Success(it))
                     } ?: emit(ResponseState.NullData())
                     if (response.body()?.meals?.isEmpty() == true)
                         emit(ResponseState.EmptyData())
                 } else {
                     Log.d("testApp", "failed to call api response code is ${response.code()}")
-                    emit(ResponseState.Error(response.message().toString()))
+                        emit(ResponseState.Error(response.message().toString()))
+                        when(response.code())
+                        {
+                            401 -> emit(ResponseState.Unauthorized())
+                        }
                 }
             } catch (e: Exception) {
                 Log.d("testApp", e.message.toString())
-                emit(ResponseState.Error(e.message.toString()))
+                        emit(ResponseState.Error(e.message.toString()))
             }
         }
     }
@@ -42,22 +45,22 @@ class HomeRepository @Inject constructor(private val apiServices: ApiServices) {
     @SuppressLint("SuspiciousIndentation")
     suspend fun getMealsWithLiveData(): LiveData<ResponseState<MealResponse>> {
         val liveData = MutableLiveData<ResponseState<MealResponse>>()
-        liveData.postValue(ResponseState.Loading())
+            liveData.postValue(ResponseState.Loading())
         try {
             val response = apiServices.getMealApi()
             if (response.isSuccessful) {
                 response.body()?.let {
-                    liveData.postValue(ResponseState.Success(it))
+                     liveData.postValue(ResponseState.Success(it))
                 } ?: liveData.postValue(ResponseState.NullData())
                 if (response.body()?.meals?.isEmpty() == true) {
-                    liveData.postValue(ResponseState.EmptyData())
+                     liveData.postValue(ResponseState.EmptyData())
                 }
             } else {
-                liveData.postValue(ResponseState.Error(message = response.message().toString()))
+                     liveData.postValue(ResponseState.Error(message = response.message().toString()))
             }
         } catch (e: Exception) {
             Log.d("testApp", e.message.toString())
-            liveData.postValue(ResponseState.Error(message = e.message.toString()))
+                    liveData.postValue(ResponseState.Error(message = e.message.toString()))
         }
         return liveData
     }

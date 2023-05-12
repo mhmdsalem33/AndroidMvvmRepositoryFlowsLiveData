@@ -21,7 +21,6 @@ class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository
 ) : ViewModel() {
 
-
     private val _fetchMealsResponseStateSharedFLow = MutableSharedFlow<ResponseState<MealResponse>>()
     val fetchMealsResponseStateSharedFLow  = _fetchMealsResponseStateSharedFLow.asSharedFlow()
 
@@ -31,8 +30,7 @@ class HomeViewModel @Inject constructor(
     init {
         fetchMeals()
     }
-   private fun fetchMeals() = viewModelScope.launch(Dispatchers.IO)
-    {
+   private fun fetchMeals() = viewModelScope.launch(Dispatchers.IO) {
         homeRepository.getMeals().collect{
             _fetchMealsResponseState.emit(it)
             _fetchMealsResponseStateSharedFLow.emit(it)
@@ -42,16 +40,11 @@ class HomeViewModel @Inject constructor(
 
     private val _getMealsLiveData = MutableLiveData<ResponseState<MealResponse>>()
     val getMealsLiveData  :LiveData<ResponseState<MealResponse>> = _getMealsLiveData
-
     init {
         getMealsLiveData()
     }
-    private fun getMealsLiveData() = viewModelScope.launch(Dispatchers.IO)
-    {
+    private fun getMealsLiveData() = viewModelScope.launch(Dispatchers.IO) {
         val response = homeRepository.getMealsWithLiveData().value
         _getMealsLiveData.postValue(response)
     }
-
-
-
 }

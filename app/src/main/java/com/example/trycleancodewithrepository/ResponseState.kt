@@ -10,6 +10,7 @@ sealed class ResponseState<T>(
     class Idle<T>         : ResponseState<T>()
     class EmptyData<T>    : ResponseState<T>()
     class NullData<T>     : ResponseState<T>()
+    class Unauthorized<T> : ResponseState<T>()
 }
 
 

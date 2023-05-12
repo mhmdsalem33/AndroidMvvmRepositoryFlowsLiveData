@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.trycleancodewithrepository.ResponseState
@@ -20,15 +21,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
         stateFlowExample()
         sharedFlowExample()
         liveData()
-
-
-
-
 
     }
 
@@ -42,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 is ResponseState.Success -> {
                     Log.d("testApp" , "live is success")
                 }
-                is ResponseState.EmptyData ->{
+                is ResponseState.EmptyData -> {
 
                 }
                 is ResponseState.Error -> {
@@ -89,7 +84,12 @@ class MainActivity : AppCompatActivity() {
 //                        Log.d("testApp" , it.data?.meals.toString())
                         val meal_Name = it.data?.meals?.first()?.strMeal
                         binding.tvMeal.text = meal_Name
-                    } else -> Unit
+                    }
+                    is ResponseState.Unauthorized -> {
+                        Toast.makeText(applicationContext, "Unauthorized", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> Unit
                 }
             }
         }
